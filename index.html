@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Tugas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* --- Base Styling --- */
+        :root {
+            /* Light Mode Colors */
+            --bg-color: #eef2f6;
+            --text-color: #2c3e50;
+            --container-bg: #ffffff;
+            --container-shadow: 0 10px 30px rgba(44, 62, 80, 0.1);
+            --border-color: #e0e0e0;
+            --input-border: #dcdcdc;
+            --input-bg: #fff;
+            --input-text: #333;
+            --input-placeholder: #aab7c4;
+            --task-bg: #fafbfc;
+            --task-hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            --meta-color: #8899aa;
+            --strike-color: #aeb6bf;
+            --primary-color: #3498db;
+            --primary-hover: #2980b9;
+            --accent-color: #2ecc71; /* Green for success */
+            --warning-color: #f39c12; /* Orange for edit */
+            --danger-color: #e74c3c; /* Red for delete */
+        }
+
+        /* --- Dark Mode Colors --- */
+        body.dark-mode {
+            --bg-color: #2c3e50;
+            --text-color: #ecf0f1;
+            --container-bg: #34495e;
+            --container-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            --border-color: #44617a;
+            --input-border: #5a7a9a;
+            --input-bg: #44617a;
+            --input-text: #ecf0f1;
+            --input-placeholder: #aab7c4;
+            --task-bg: #3c546c;
+            --task-hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            --meta-color: #aeb6bf;
+            --strike-color: #7f8c8d;
+        }
+
+        /* --- General Body Styling --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            line-height: 1.6;
+        }
+
+        /* --- Main Container --- */
+        .container {
+            background-color: var(--container-bg);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: var(--container-shadow);
+            width: 100%;
+            max-width: 750px;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, box-shadow 0.5s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Header --- */
+        h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            font-weight: 700;
+            color: var(--text-color);
+            position: relative;
+            padding-bottom: 15px;
+            transition: color 0.5s ease;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        /* --- Form Styling --- */
+        form {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        form.add-task-form {
+            background-color: var(--task-bg);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            align-items: center;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.03);
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+
+        form.add-task-form input[type="text"] {
+            flex-grow: 1;
+        }
+
+        form.add-task-form input[type="date"] {
+            flex-basis: 150px;
+            min-width: 120px;
+        }
+
+        form.search-form {
+            justify-content: center;
+        }
+        
+        form input[type="text"],
+        form input[type="date"] {
+            padding: 15px;
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            font-size: 1em;
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        form input::placeholder {
+            color: var(--input-placeholder);
+        }
+        
+        form input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.4);
+            background-color: var(--input-bg);
+        }
+        
+        form button {
+            padding: 15px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        form button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Task List Styling --- */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            margin-bottom: 15px;
+            background-color: var(--task-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease, border-color 0.5s ease;
+        }
+        
+        .task-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--task-hover-shadow);
+        }
+
+        .task-left {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+            margin-right: 20px;
+        }
+        
+        .task-content {
+            font-size: 1.1em;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-content s {
+            color: var(--strike-color);
+            transition: color 0.5s ease;
+        }
+
+        .task-meta {
+            font-size: 0.9em;
+            color: var(--meta-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: color 0.5s ease;
+            font-weight: 500;
+        }
+        
+        .task-meta .overdue {
+            color: var(--danger-color); /* Red for overdue */
+            font-weight: 600;
+        }
+        
+        /* --- Action Buttons --- */
+        .task-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .task-buttons a, .task-buttons button {
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Done/Toggle Button */
+        .task-buttons a[href*="done"] { 
+            background-color: #d1f7e0; 
+            color: var(--accent-color);
+        }
+        .dark-mode .task-buttons a[href*="done"] { 
+            background-color: #216f45; 
+            color: #90ee90; 
+        }
+        .task-buttons a[href*="done"]:hover { 
+            background-color: var(--accent-color); 
+            color: white; 
+        }
+
+        /* Edit Button */
+        .task-buttons a[href*="edit"] { 
+            background-color: #fff4d8; 
+            color: var(--warning-color); 
+        }
+        .dark-mode .task-buttons a[href*="edit"] { 
+            background-color: #8c6a00; 
+            color: #ffeb99; 
+        }
+        .task-buttons a[href*="edit"]:hover { 
+            background-color: var(--warning-color); 
+            color: white; 
+        }
+
+        /* Delete Button */
+        .task-buttons a[href*="delete"] { 
+            background-color: #fcdbd8; 
+            color: var(--danger-color); 
+        }
+        .dark-mode .task-buttons a[href*="delete"] { 
+            background-color: #802e2c; 
+            color: #ff9999; 
+        }
+        .task-buttons a[href*="delete"]:hover { 
+            background-color: var(--danger-color); 
+            color: white; 
+        }
+        
+        /* --- General Controls (Logout & Toggle) --- */
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 750px;
+            margin-top: 30px;
+            padding: 15px 0;
+        }
+        
+        .logout-link {
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 25px;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: color 0.5s ease;
+        }
+        
+        /* Toggle Switch Styling */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 55px;
+            height: 30px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #b0c4de; /* Light gray-blue */
+            transition: .4s;
+            border-radius: 30px;
+        }
+        
+        .dark-mode .slider {
+            background-color: #6a7f93;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        input:checked + .slider {
+            background-color: var(--accent-color); /* Green */
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(25px);
+        }
+
+        /* Calendar Button */
+        .btn-calendar {
+            background-color: #e6f2ff;
+            color: var(--primary-color);
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .dark-mode .btn-calendar {
+            background-color: #004d80;
+            color: #99c2ff;
+        }
+        
+        .btn-calendar:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Responsive adjustments --- */
+        @media (max-width: 768px) {
+            .container { padding: 30px; }
+            h2 { font-size: 2em; margin-bottom: 30px; }
+            form { flex-direction: column; gap: 15px; }
+            form button { width: 100%; }
+            .task-item { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 15px;
+                padding: 20px;
+            }
+            .task-left { margin-right: 0; width: 100%; }
+            .task-meta { flex-wrap: wrap; }
+            .task-buttons { 
+                width: 100%; 
+                justify-content: space-around; 
+                gap: 5px;
+            }
+            .task-buttons a { flex-grow: 1; text-align: center; justify-content: center; }
+            .controls { 
+                flex-direction: column-reverse; 
+                gap: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Selamat datang, {{ current_user.username }}</h2>
+
+        <form action="/add" method="post" class="add-task-form">
+            <input type="text" name="task" placeholder="Tambah tugas baru..." required>
+            <input type="date" name="deadline">
+            <button type="submit"><i class="fas fa-plus-circle"></i> Tambah</button>
+        </form>
+
+        <form action="/" method="get" class="search-form">
+            <input type="text" name="q" placeholder="Cari tugas..." value="{{ request.args.get('q', '') }}">
+            <button type="submit"><i class="fas fa-search"></i> Cari</button>
+        </form>
+
+        <ul>
+            {% for task in tasks %}
+            <li class="task-item" {% if task.deadline and task.deadline < today and not task.is_done %} style="border: 2px solid var(--danger-color); animation: pulse-red 1.5s infinite;" {% endif %}>
+                <div class="task-left">
+                    <div class="task-content">
+                        {% if task.is_done %}
+                            <i class="far fa-check-circle" style="color: var(--accent-color);"></i>
+                            <s>{{ task.content }}</s>
+                        {% else %}
+                            <i class="far fa-circle" style="color: var(--primary-color);"></i>
+                            <span>{{ task.content }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="task-meta">
+                        {% if task.deadline %}
+                            <span><i class="far fa-calendar-alt"></i> {{ task.deadline.strftime('%d %b %Y') }}</span>
+                            {% if task.deadline < today and not task.is_done %}
+                                <span class="overdue"><i class="fas fa-exclamation-triangle"></i> Telat!</span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="task-buttons">
+                    <a href="/done/{{ task.id }}" title="Tandai Selesai/Belum"><i class="fas fa-check"></i> Toggle</a>
+                    <a href="/edit/{{ task.id }}" title="Edit Tugas"><i class="fas fa-pen"></i> Edit</a>
+                    <a href="/delete/{{ task.id }}" title="Hapus Tugas"><i class="fas fa-trash-alt"></i> Hapus</a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        
+        <div class="d-flex justify-content-center mt-4">
+            <a href="{{ url_for('calendar_view') }}" class="btn-calendar"><i class="far fa-calendar-alt"></i> Lihat Kalender</a>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <a href="/logout" class="logout-link">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+        <div class="toggle-container">
+            <i class="fas fa-moon"></i>
+            <span>Mode Gelap</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+    
+    <script>
+        // --- JavaScript untuk Toggle Dark Mode ---
+        const toggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+
+        // Cek preferensi pengguna dari localStorage
+        const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+        if (isDarkMode) {
+            body.classList.add('dark-mode');
+            toggle.checked = true;
+        }
+
+        // Event listener untuk toggle
+        toggle.addEventListener('change', function() {
+            if (this.checked) {
+                body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+    </script>
+</body>
+</html>

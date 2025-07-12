@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* --- Root Variables for Theming --- */
+        :root {
+            /* Light Mode Colors */
+            --bg-color: #f5f7fa;
+            --text-color: #2c3e50;
+            --container-bg: #ffffff;
+            --container-shadow: 0 15px 50px rgba(44, 62, 80, 0.1);
+            --border-color: #e1e4e8;
+            --input-bg: #fdfdfe;
+            --input-text: #333;
+            --input-placeholder: #aab7c4;
+            --input-border-focus: #3498db;
+            --button-bg: #3498db;
+            --button-hover: #2980b9;
+            --label-color: #7f8c8d;
+            --select-arrow-color: #7f8c8d;
+            --success-color: #2ecc71;
+        }
+        
+        /* --- Dark Mode Colors --- */
+        body.dark-mode {
+            --bg-color: #1e272e;
+            --text-color: #ecf0f1;
+            --container-bg: #2d3844;
+            --container-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+            --border-color: #4a5d6e;
+            --input-bg: #3c4c5b;
+            --input-text: #ecf0f1;
+            --input-placeholder: #95a5a6;
+            --input-border-focus: #5dade2;
+            --button-bg: #5dade2;
+            --button-hover: #3498db;
+            --label-color: #bdc3c7;
+            --select-arrow-color: #ecf0f1;
+        }
+
+        /* --- General Body Styling --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        
+        /* --- Main Container / Card --- */
+        .edit-container {
+            background-color: var(--container-bg);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: var(--container-shadow);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .edit-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, #3498db, #8e44ad);
+            animation: stripeAnimation 3s infinite linear;
+        }
+
+        /* --- Header --- */
+        h2 {
+            margin-bottom: 40px;
+            font-size: 2.8em;
+            font-weight: 700;
+            color: var(--text-color);
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 5px;
+            background-color: var(--input-border-focus);
+            border-radius: 3px;
+        }
+        
+        /* --- Form Styling --- */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            text-align: left;
+        }
+        
+        label {
+            font-weight: 600;
+            font-size: 1em;
+            color: var(--label-color);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 18px;
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1.1em;
+            box-sizing: border-box;
+            transition: all 0.4s ease;
+            -webkit-appearance: none; /* Hapus gaya default browser */
+            -moz-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        /* Custom arrow for select dropdown */
+        select {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 16px;
+            padding-right: 40px; /* Jaga agar teks tidak menimpa ikon */
+        }
+        
+        body.dark-mode select {
+            /* Ganti warna ikon panah untuk mode gelap */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23ecf0f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+        }
+        
+        input::placeholder {
+            color: var(--input-placeholder);
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--input-border-focus);
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.6);
+            background-color: var(--input-bg);
+        }
+        
+        /* --- Button Styling --- */
+        button[type="submit"] {
+            width: 100%;
+            padding: 18px;
+            margin-top: 20px;
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button[type="submit"]:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes stripeAnimation {
+            0% { background-position: 0% 0; }
+            100% { background-position: 100% 0; }
+        }
+
+        /* --- Responsive adjustments --- */
+        @media (max-width: 600px) {
+            .edit-container {
+                padding: 30px;
+                border-radius: 15px;
+            }
+            h2 { font-size: 2em; }
+            input, select, button { padding: 15px; font-size: 1em; }
+        }
+    </style>
+    
+    <script>
+        // JavaScript for Dark Mode Toggle (if needed)
+        // This script ensures the page respects the user's dark mode preference
+        // from the previous pages.
+        document.addEventListener('DOMContentLoaded', () => {
+            const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="edit-container">
+        <h2><i class="fas fa-user-edit"></i> Edit User</h2>
+        <form method="post">
+            <label for="username"><i class="fas fa-user"></i> Username:</label>
+            <input type="text" id="username" name="username" value="{{ user.username }}" required>
+            
+            <label for="role"><i class="fas fa-shield-alt"></i> Role:</label>
+            <div class="select-wrapper">
+                <select id="role" name="role">
+                    <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
+                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                </select>
+            </div>
+
+            <button type="submit">
+                <i class="fas fa-save"></i> Simpan
+            </button>
+        </form>
+    </div>
+</body>
+</html>

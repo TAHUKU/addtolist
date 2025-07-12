@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📅 Kalender Tugas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* --- Root Variables for Theming --- */
+        :root {
+            /* Light Mode Colors */
+            --bg-color: #f0f2f5;
+            --text-color: #2c3e50;
+            --container-bg: #ffffff;
+            --container-shadow: 0 10px 30px rgba(44, 62, 80, 0.15);
+            --border-color: #e0e0e0;
+            --primary-color: #3498db;
+            --primary-hover: #2980b9;
+            --back-btn-bg: #f8f9fa;
+            --back-btn-border: #ced4da;
+            --back-btn-text: #6c757d;
+
+            /* FullCalendar Colors */
+            --fc-bg-color: #ffffff;
+            --fc-border-color: #e0e0e0;
+            --fc-text-color: #333;
+            --fc-day-header-text: #555;
+            --fc-today-bg: #fdf3e3; /* Light orange tint for today */
+            --event-done: #2ecc71; /* Green */
+            --event-not-done: #e74c3c; /* Red */
+        }
+
+        /* --- Dark Mode Variables --- */
+        body.dark-mode {
+            --bg-color: #2c3e50;
+            --text-color: #ecf0f1;
+            --container-bg: #34495e;
+            --container-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --border-color: #44617a;
+            --back-btn-bg: #44617a;
+            --back-btn-border: #6c8ca7;
+            --back-btn-text: #ecf0f1;
+            
+            /* FullCalendar Dark Mode Colors */
+            --fc-bg-color: #34495e;
+            --fc-border-color: #4a627a;
+            --fc-text-color: #ecf0f1;
+            --fc-day-header-text: #bdc3c7;
+            --fc-today-bg: #4a3c3e; /* Darker tint for today */
+        }
+
+        /* --- General Body Styling --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* --- Header --- */
+        h2 {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        /* --- Calendar Container Styling --- */
+        #calendar {
+            width: 100%;
+            max-width: 950px;
+            margin: 0 auto;
+            background: var(--fc-bg-color);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--container-shadow);
+            transition: background-color 0.5s ease, box-shadow 0.5s ease;
+        }
+        
+        /* FullCalendar overrides */
+        .fc {
+            font-family: 'Poppins', sans-serif;
+            color: var(--fc-text-color);
+        }
+
+        .fc .fc-toolbar-title {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--fc-text-color);
+        }
+
+        .fc .fc-toolbar-chunk .fc-button-group .fc-button {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 8px 15px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .fc .fc-toolbar-chunk .fc-button-group .fc-button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .fc-daygrid-day-number {
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        .fc-col-header-cell-cushion {
+            font-weight: 600;
+            color: var(--fc-day-header-text);
+        }
+        
+        .fc-daygrid-event {
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 500;
+            padding: 4px 8px;
+            margin: 2px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            white-space: normal; /* Allow text wrapping */
+            line-height: 1.3;
+        }
+
+        .fc-daygrid-event:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        /* Override FullCalendar's default event colors */
+        .fc-event-done {
+            background-color: var(--event-done) !important;
+            border-color: var(--event-done) !important;
+            color: white !important;
+        }
+
+        .fc-event-not-done {
+            background-color: var(--event-not-done) !important;
+            border-color: var(--event-not-done) !important;
+            color: white !important;
+        }
+
+        .fc-day-today {
+            background-color: var(--fc-today-bg) !important;
+        }
+
+        /* --- Legend Styling --- */
+        .legend {
+            max-width: 950px;
+            margin: 0 auto 30px;
+            padding: 15px;
+            text-align: center;
+            font-weight: 500;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1em;
+        }
+
+        .dot {
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .dot.done {
+            background-color: var(--event-done);
+        }
+
+        .dot.not-done {
+            background-color: var(--event-not-done);
+        }
+
+        /* --- Back Button Styling --- */
+        .back-button {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .back-button a {
+            text-decoration: none;
+            padding: 15px 30px;
+            background-color: var(--back-btn-bg);
+            color: var(--back-btn-text);
+            border: 2px solid var(--back-btn-border);
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-button a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- Responsive adjustments --- */
+        @media (max-width: 768px) {
+            h2 { font-size: 2em; }
+            #calendar { padding: 15px; border-radius: 15px; }
+            .fc .fc-toolbar-title { font-size: 1.5em; }
+            .fc .fc-toolbar { flex-direction: column; gap: 15px; }
+            .fc-button-group { width: 100%; display: flex; justify-content: center; }
+            .legend { flex-direction: column; gap: 10px; }
+            .back-button a { width: 100%; max-width: 300px; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>📅 Kalender Tugas</h2>
+
+    <div class="legend">
+        <span><span class="dot done"></span> Selesai</span>
+        <span><span class="dot not-done"></span> Belum Selesai</span>
+    </div>
+
+    <div id="calendar"></div>
+
+    <div class="back-button">
+        <a href="{{ url_for('index') }}">
+            <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script>
+        // Sinkronisasi Dark Mode dengan localStorage
+        const syncDarkMode = () => {
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        };
+
+        // Sinkronisasi mode saat halaman dimuat
+        syncDarkMode();
+
+        // Listen for changes in localStorage from other tabs/windows
+        window.addEventListener('storage', syncDarkMode);
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+
+            // Fetch tasks from the API
+            fetch('/api/tasks')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Data event:", data);
+                    
+                    const calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        locale: 'id', // Set locale to Indonesian
+                        headerToolbar: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                        },
+                        buttonText: {
+                            today: 'Hari Ini',
+                            month: 'Bulan',
+                            week: 'Minggu',
+                            day: 'Hari'
+                        },
+                        // Use data.events directly from the API
+                        events: data.events,
+                        
+                        // Custom styling for events
+                        eventDidMount: function(info) {
+                            const isDone = info.event.extendedProps.is_done;
+                            const element = info.el;
+                            
+                            // Add custom class based on status
+                            if (isDone) {
+                                element.classList.add('fc-event-done');
+                            } else {
+                                element.classList.add('fc-event-not-done');
+                            }
+                        },
+
+                        // Define a custom class for events
+                        eventClassNames: function(arg) {
+                            return ['custom-event'];
+                        },
+
+                        // Adjust event rendering
+                        eventDisplay: 'block',
+                        displayEventTime: false,
+                    });
+                    
+                    calendar.render();
+                })
+                .catch(error => {
+                    console.error('Error fetching tasks:', error);
+                });
+        });
+    </script>
+</body>
+</html>

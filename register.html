@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            transition: transform 0.3s ease-in-out;
+            border: 1px solid #e0e0e0;
+        }
+
+        .container:hover {
+            transform: translateY(-10px);
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-weight: 700;
+            font-size: 2.5em;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            background-color: #3498db;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+            outline: none;
+            background-color: #f9f9f9;
+        }
+
+        button[type="submit"] {
+            background-color: #2ecc71; /* Warna hijau yang menarik */
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            letter-spacing: 1px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #27ae60; /* Warna hijau lebih gelap saat di-hover */
+            transform: translateY(-3px);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+        p {
+            margin-top: 25px;
+            font-size: 0.95em;
+            color: #7f8c8d;
+        }
+
+        p a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        p a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Daftar Akun</h2>
+        <form method="POST">
+            <input name="username" type="text" placeholder="Username" required><br>
+            <input name="password" type="password" placeholder="Password" required><br>
+            <button type="submit">Daftar</button>
+        </form>
+        <p>Sudah punya akun? <a href="/login">Login</a></p>
+    </div>
+</body>
+</html>
